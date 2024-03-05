@@ -1,0 +1,14 @@
+{{ define "tabs" }}
+    <nav>
+        {{ range . }}
+            <button
+                hx-get="{{ .HxGet }}"
+                class="border-4 border-blue-500 bg-red-100"
+                hx-target="#MainContent"
+                hx-swap="outerHTML"
+            >
+                {{ .Text }}
+            </button>
+        {{ end }}
+    </nav>
+{{ end }}

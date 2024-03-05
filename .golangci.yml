@@ -1,0 +1,29 @@
+linters:
+  enable:
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - dogsled
+    - dupl
+    - dupword
+    - errchkjson
+    - exhaustive
+    - forcetypeassert
+    - gochecksumtype
+    - inamedparam
+    - misspell
+    - revive
+    - rowserrcheck
+    - sloglint
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - wastedassign
+
+linters-settings:
+  revive:
+    rules:
+      - name: var-naming
+        Disabled: true
