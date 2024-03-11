@@ -1,10 +1,18 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/JonnyLoughlin/pio/internal/ui"
+	"github.com/JonnyLoughlin/pio/internal/ui/src/templates"
+	"github.com/JonnyLoughlin/pio/internal/ui/src/templates/components"
+	"github.com/JonnyLoughlin/pio/internal/ui/src/templates/pages"
+
+	"github.com/a-h/templ"
+
 	"github.com/angelofallars/htmx-go"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -37,62 +45,106 @@ func (s *Server) RegisterRoutes() http.Handler {
 		r.Handle("/src/assets/*", assetFileServer)
 
 		// Page Routes
-		r.Get(string(ui.RouteHome), s.HomeHandler)
-		r.Get(string(ui.RouteServices), s.ServicesHandler)
-		r.Get(string(ui.RouteCatering), s.CateringHandler)
-		r.Get(string(ui.RouteUnfriendlys), s.UnfriendlysHandler)
-		r.Get(string(ui.RouteEmployment), s.EmploymentHandler)
-		r.Get(string(ui.RouteContact), s.ContactHandler)
-		r.Get(string(ui.RouteOrder), s.OrderHandler)
+		r.Get(string(RouteHome), s.HomeHandler)
+		r.Get(string(RouteServices), s.ServicesHandler)
+		r.Get(string(RouteCatering), s.CateringHandler)
+		r.Get(string(RouteUnfriendlys), s.UnfriendlysHandler)
+		r.Get(string(RouteEmployment), s.EmploymentHandler)
+		r.Get(string(RouteContact), s.ContactHandler)
+		r.Get(string(RouteOrder), s.OrderHandler)
 	})
 
 	return r
 }
 
-func (s *Server) PageHandler(w http.ResponseWriter, r *http.Request, route ui.Route, page ui.Page) {
+type Route string
+
+const (
+	RouteHome        Route = "/"
+	RouteServices    Route = "/Services"
+	RouteCatering    Route = "/Catering"
+	RouteUnfriendlys Route = "/Unfriendlys"
+	RouteEmployment  Route = "/Employment"
+	RouteContact     Route = "/Contact"
+	RouteOrder       Route = "/Order"
+)
+
+var TabsData = []components.TabProps{
+	{
+		Text:  "Home",
+		HxGet: string(RouteHome),
+	},
+	{
+		Text:  "Services",
+		HxGet: string(RouteServices),
+	},
+	{
+		Text:  "Catering",
+		HxGet: string(RouteCatering),
+	},
+	{
+		Text:  "Unfriendly's Ice Cream",
+		HxGet: string(RouteUnfriendlys),
+	},
+	{
+		Text:  "Employment",
+		HxGet: string(RouteEmployment),
+	},
+	{
+		Text:  "Contact Us",
+		HxGet: string(RouteContact),
+	},
+	{
+		Text:  "Order Here",
+		HxGet: string(RouteOrder),
+	},
+}
+
+func (s *Server) PageHandler(w http.ResponseWriter, r *http.Request, route Route, page templ.Component) {
 	// If the request is an htmx request, write the maincontent only
 	if htmx.IsHTMX(r) {
+		log.Println("Is HTMX")
 		err := htmx.NewResponse().PushURL(string(route)).Write(w)
 		if err != nil {
 			panic(err)
 		}
-		_, err = ui.WriteComposedTemplate(w, ui.LayoutHtmx, page)
+		// else, write the content in the base layout
+		err = page.Render(r.Context(), w)
 		if err != nil {
 			panic(err)
 		}
 		return
 	}
-	// else, write the content in the base layout
-	_, err := ui.WriteComposedTemplate(w, ui.LayoutBase, ui.PageHome)
+	err := templates.Base(TabsData, page).Render(r.Context(), w)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (s *Server) HomeHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteHome, ui.PageHome)
+	s.PageHandler(w, r, RouteHome, pages.Home())
 }
 
 func (s *Server) ServicesHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteServices, ui.PageServices)
+	s.PageHandler(w, r, RouteServices, pages.Services())
 }
 
 func (s *Server) CateringHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteCatering, ui.PageCatering)
+	s.PageHandler(w, r, RouteCatering, pages.Catering())
 }
 
 func (s *Server) UnfriendlysHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteUnfriendlys, ui.PageUnfriendlys)
+	s.PageHandler(w, r, RouteUnfriendlys, pages.Unfriendlys())
 }
 
 func (s *Server) EmploymentHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteEmployment, ui.PageEmployment)
+	s.PageHandler(w, r, RouteEmployment, pages.Employment())
 }
 
 func (s *Server) ContactHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteContact, ui.PageContact)
+	s.PageHandler(w, r, RouteContact, pages.Contact())
 }
 
 func (s *Server) OrderHandler(w http.ResponseWriter, r *http.Request) {
-	s.PageHandler(w, r, ui.RouteOrder, ui.PageOrder)
+	s.PageHandler(w, r, RouteOrder, pages.Order())
 }

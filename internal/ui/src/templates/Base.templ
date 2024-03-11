@@ -1,0 +1,39 @@
+package templates
+
+import "github.com/JonnyLoughlin/pio/internal/ui/src/templates/components"
+
+templ Base(tabs []components.TabProps, main templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<title>Pioneer Market - Fire Island</title>
+			<script src="/src/js/htmx/htmx.min.js"></script>
+			<meta
+				name="htmx-config"
+				content='{"defaultSwapStyle":"outerHTML"}'
+			/>
+			<link
+				rel="stylesheet"
+				href="/src/css/output.css"
+			/>
+			<script src="https://cdn.tailwindcss.com"></script>
+		</head>
+		<body class="flex w-full flex-col items-center justify-center">
+			<header class="flex w-11/12 flex-col items-center justify-center">
+				<img src="/src/assets/header.jpg"/>
+				<nav>
+					for _,v := range tabs {
+						<button
+							hx-get={ v.HxGet }
+							class="border-4 border-blue-500 bg-red-100"
+							hx-target="#MainContent"
+						>{ v.Text }</button>
+					}
+				</nav>
+			</header>
+			@main
+			<footer></footer>
+		</body>
+	</html>
+}

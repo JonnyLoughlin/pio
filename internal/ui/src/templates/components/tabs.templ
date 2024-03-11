@@ -1,0 +1,21 @@
+package components
+
+type TabProps struct {
+	Text  string
+	HxGet string
+}
+
+templ tabs(props []TabProps) {
+	<nav>
+		for _, v := range props {
+			<button
+				hx-get={ v.HxGet }
+				class="border-4 border-blue-500 bg-red-100"
+				hx-target="#MainContent"
+				hx-swap="outerHTML"
+			>
+				{ v.Text }
+			</button>
+		}
+	</nav>
+}

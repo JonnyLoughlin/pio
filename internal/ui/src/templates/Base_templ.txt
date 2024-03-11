@@ -1,0 +1,6 @@
+<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Pioneer Market - Fire Island</title><script src=\"/src/js/htmx/htmx.min.js\"></script><meta name=\"htmx-config\" content=\"{&#34;defaultSwapStyle&#34;:&#34;outerHTML&#34;}\"><link rel=\"stylesheet\" href=\"/src/css/output.css\"><script src=\"https://cdn.tailwindcss.com\"></script></head><body class=\"flex w-full flex-col items-center justify-center\"><header class=\"flex w-11/12 flex-col items-center justify-center\"><img src=\"/src/assets/header.jpg\"><nav>
+<button hx-get=\"
+\" class=\"border-4 border-blue-500 bg-red-100\" hx-target=\"#MainContent\">
+</button>
+</nav></header>
+<footer></footer></body></html>
